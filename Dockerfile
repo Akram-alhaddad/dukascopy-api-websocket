@@ -1,6 +1,7 @@
-FROM openjdk:17-jdk-alpine
-EXPOSE 7080
-EXPOSE 7081
-ARG JAR_FILE=target/dukascopy-api-websocket-1.0.war
-ADD ${JAR_FILE} dukascopy-api-websocket.war
-ENTRYPOINT ["java","-jar","dukascopy-api-websocket.war","--dukascopy.credential-username=username", "--dukascopy.credential-password=password"]
+FROM python:3.10-slim
+WORKDIR /app
+COPY requirements.txt /app/
+RUN pip install --no-cache-dir -r requirements.txt
+COPY . /app
+ENV PYTHONUNBUFFERED=1
+CMD ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "1"]
