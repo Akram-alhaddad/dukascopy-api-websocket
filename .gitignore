@@ -1,45 +1,29 @@
-HELP.md
-target/
-!.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
-.mvn
+# Environment files
+.env
+.env.local
+.env.production
+.env.development
 
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
 
-### IntelliJ IDEA ###
-.idea
-*.iws
-*.iml
-*.ipr
+# Node / frontend
+node_modules/
+.next/
 
-# batch files
-*.bat
+# Data / ML artifacts (do not upload large datasets or model weights)
+data/*.csv
+data/*.parquet
+data/*.json
+data/ticks/
 
-# svn
-.svn
+models/*.pkl
+models/*.h5
+models/*.pt
+models/*.onnx
 
-# mvn
-mvnw
-mvnw.cmd
-
-
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
-
-### VS Code ###
-.vscode/
+# logs
+*.log
+logs/
