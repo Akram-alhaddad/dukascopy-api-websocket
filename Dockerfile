@@ -1,23 +1,37 @@
-# ---------- مرحلة البناء ----------
+# ============================
+# مرحلة البناء (Build)
+# ============================
 FROM maven:3.9.9-eclipse-temurin-17 AS builder
 WORKDIR /build
 
-# نسخ جميع ملفات المشروع
-COPY . .
+# نسخ ملفات المشروع (pom.xml والكود المصدري)
+COPY pom.xml .
+COPY src ./src
 
 # تحميل التبعيات وبناء المشروع بدون تشغيل الاختبارات
 RUN mvn clean package -DskipTests
 
-# ---------- مرحلة التشغيل ----------
+# ============================
+# مرحلة التشغيل (Runtime)
+# ============================
 FROM eclipse-temurin:17-jre-jammy
 WORKDIR /app
 
-# نسخ ملف WAR النهائي
-COPY --from=builder /build/target/dukascopy-api-websocket-1.0.war app.war
+# نسخ ملف WAR الناتج من مرحلة البناء
+COPY --from=builder /build/target/*.war app.war
 
-# فتح البورتات
-EXPOSE 7080
-EXPOSE 7081
+# تعريض المنفذ (سيتم تجاوزه بواسطة Render عبر متغير PORT)
+EXPOSE 8080
 
-# بدء التطبيق مع متغيرات البيئة من .env
-CMD ["sh","-c","java -jar app.war --dukascopy.credential-username=$DUKASCOPY_USER --dukascopy.credential-password=$DUKASCOPY_PASS"]
+# متغيرات البيئة الافتراضية (يتم استبدالها بقيم من Render)
+ENV DUKE_USERNAME=${DUKASCOPY_USER} \
+    DUKE_PASSWORD=${DUKASCOPY_PASS} \
+    DB_URL=${DATABASE_URL} \
+    SERVER_PORT=${PORT:-8080}
+
+# نقطة الدخول: تشغيل التطبيق مع تمرير المتغيرات
+CMD java -jar app.war \
+    --server.port=$SERVER_PORT \
+    --dukascopy.username=$DUKE_USERNAME \
+    --dukascopy.password=$DUKE_PASSWORD \
+    --spring.datasource.url=$DB_URL
