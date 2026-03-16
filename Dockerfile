@@ -15,9 +15,9 @@ COPY src ./src
 RUN mvn clean package -DskipTests
 
 # ============================
-# مرحلة التشغيل (Runtime) باستخدام Java 11
+# مرحلة التشغيل (Runtime) باستخدام Eclipse Temurin (Java 11)
 # ============================
-FROM openjdk:11-jre-slim
+FROM eclipse-temurin:11-jre
 WORKDIR /app
 
 # نسخ ملف WAR الناتج من مرحلة البناء
