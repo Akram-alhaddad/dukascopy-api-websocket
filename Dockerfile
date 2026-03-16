@@ -5,13 +5,13 @@ WORKDIR /build
 COPY pom.xml .
 COPY src ./src
 
-# بناء المشروع بدون اختبار
 RUN mvn clean package -DskipTests
 
 # مرحلة التشغيل
 FROM eclipse-temurin:17-jre-jammy
 WORKDIR /app
 
+# نسخ ملف WAR النهائي
 COPY --from=builder /build/target/dukascopy-api-websocket-1.0.war app.war
 
 EXPOSE 7080
